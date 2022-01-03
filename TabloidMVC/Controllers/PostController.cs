@@ -5,6 +5,8 @@ using Microsoft.VisualBasic;
 using System.Security.Claims;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
+using TabloidMVC.Models;
+using System;
 
 namespace TabloidMVC.Controllers
 {
@@ -46,6 +48,30 @@ namespace TabloidMVC.Controllers
             var vm = new PostCreateViewModel();
             vm.CategoryOptions = _categoryRepository.GetAll();
             return View(vm);
+        }
+
+        public IActionResult Edit(int id)
+        {
+            Post post = _postRepository.GetPublishedPostById(id);
+
+            return View(post);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Post post)
+        {
+            try
+            {
+                _postRepository.UpdatePost(post);
+
+                return RedirectToAction("Index");
+            }
+            catch(Exception ex)
+            {
+                return View(post);
+            }
+
+            
         }
 
         [HttpPost]
