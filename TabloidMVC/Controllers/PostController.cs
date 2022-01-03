@@ -68,6 +68,12 @@ namespace TabloidMVC.Controllers
             }
         }
 
+        public IActionResult Delete(int id)
+        {
+            _postRepository.Remove(id);
+            return RedirectToAction("Index");
+        }
+
         private int GetCurrentUserProfileId()
         {
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
