@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,62 @@ namespace TabloidMVC.Repositories
                     return comments;
                 }
             }
+        }
+
+        public List<Comment> GetCommentsByPostId(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                       SELECT c.Subject, c.Content, u.DisplayName, c.CreateDateTime, p.Title
+                         FROM Comment c
+                              LEFT JOIN UserProfile u ON c.UserProfileId = u.id
+                              LEFT JOIN Post p ON c.PostId = p.id
+                        WHERE PostId = @id 
+                        ORDER BY CreateDateTime";
+
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        var postComments = new List<Comment>();
+
+                        while (reader.Read())
+                        {
+                            postComments.Add(NewCommentFromReader(reader));
+                        }
+
+                        return postComments;
+                    }
+                }
+            }
+        }
+
+        private Comment NewCommentFromReader(SqlDataReader reader)
+        {
+            return new Comment()
+            {
+                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                Subject = reader.GetString(reader.GetOrdinal("Subject")),
+                Content = reader.GetString(reader.GetOrdinal("Content")),
+                CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
+                PostId = reader.GetInt32(reader.GetOrdinal("PostId")),
+                Post = new Post()
+                {
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    Title = reader.GetString(reader.GetOrdinal("Title"))
+                },
+                UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
+                UserProfile = new UserProfile()
+                {
+                    Id = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
+                    DisplayName = reader.GetString(reader.GetOrdinal("DisplayName"))
+                }
+            };
         }
     }
 }
