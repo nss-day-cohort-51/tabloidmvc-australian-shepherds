@@ -16,7 +16,8 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"SELECT id, [Name] 
-                                        FROM Tag";
+                                        FROM Tag
+                                        ORDER BY Name ASC"; 
 
                     var reader = cmd.ExecuteReader();
 
