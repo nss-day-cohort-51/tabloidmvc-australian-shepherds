@@ -51,6 +51,15 @@ namespace TabloidMVC.Controllers
             }
 
         }
+
+        public IActionResult CommentList(int id)
+        {
+
+            var postCommentList = _commentRepository.GetCommentsByPostId(id);
+
+            return View(postCommentList);
+        }
+
         private int GetCurrentUserProfileId()
         {
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
