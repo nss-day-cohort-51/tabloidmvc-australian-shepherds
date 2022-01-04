@@ -14,7 +14,7 @@ namespace TabloidMVC.Controllers
         {
             private readonly ICommentRepository _commentRepository;
 
-            public CommentController(ICommentRepository commentRepository, ICategoryRepository categoryRepository)
+            public CommentController(ICommentRepository commentRepository)
             {
                 _commentRepository = commentRepository;
             }
@@ -26,7 +26,6 @@ namespace TabloidMVC.Controllers
         public IActionResult Delete(int id)
         {
             _commentRepository.Remove(id);
-
             return RedirectToAction("Index");
         }
     }
