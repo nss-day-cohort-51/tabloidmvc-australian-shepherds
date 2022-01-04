@@ -82,7 +82,8 @@ namespace TabloidMVC.Controllers
         // GET: TagController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            _tagRepository.Remove(id);
+            return RedirectToAction("Index");
         }
 
         // POST: TagController/Delete/5
@@ -94,7 +95,7 @@ namespace TabloidMVC.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
                 return View();
             }

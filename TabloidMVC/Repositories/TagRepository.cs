@@ -16,7 +16,8 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"SELECT id, [Name] 
-                                        FROM Tag";
+                                        FROM Tag
+                                        ORDER BY Name ASC";
 
                     var reader = cmd.ExecuteReader();
 
@@ -61,7 +62,7 @@ namespace TabloidMVC.Repositories
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Name = reader.GetString(reader.GetOrdinal("Name"))
                         };
-                            
+
                     }
                     reader.Close();
 
@@ -90,11 +91,12 @@ namespace TabloidMVC.Repositories
 
         public void UpdateTag(Tag tag)
         {
-            using(var conn = Connection){
+            using (var conn = Connection)
+            {
 
                 conn.Open();
 
-                using(var cmd = conn.CreateCommand())
+                using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
                             UPDATE Tag
@@ -107,6 +109,23 @@ namespace TabloidMVC.Repositories
 
                     cmd.ExecuteNonQuery();
                 }
+            }
+        }
+        public void Remove(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM Tag WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+
             }
         }
     }
