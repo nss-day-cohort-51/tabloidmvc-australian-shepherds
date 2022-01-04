@@ -72,6 +72,39 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public Comment GetSingleComment(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                       SELECT *
+                         FROM Comment c
+                              LEFT JOIN UserProfile u ON c.UserProfileId = u.id
+                              LEFT JOIN Post p ON c.PostId = p.id
+                        WHERE c.Id = @id
+                        ORDER BY c.CreateDateTime";
+
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        var comment = new Comment();
+
+                        if (reader.Read())
+                        {
+                            comment = NewCommentFromReader(reader);
+                        }
+
+                        return comment;
+                    }
+                }
+            }
+        }
+
         private Comment NewCommentFromReader(SqlDataReader reader)
         {
             return new Comment()
