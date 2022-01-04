@@ -13,12 +13,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PostId)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.UserProfileId)
             </th>
             <th>
@@ -36,14 +30,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PostId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserProfileId)
+                @Html.DisplayFor(modelItem => item.UserProfile.DisplayName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Subject)
@@ -55,11 +44,16 @@
                 @Html.DisplayFor(modelItem => item.CreateDateTime)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Edit", "Edit", new {  id=item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
             </td>
         </tr>
 }
+        <p>
+            <a asp-controller="Post" asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary mx-1" title="Comment">Post</a>
+        </p>
     </tbody>
 </table>
+
+
