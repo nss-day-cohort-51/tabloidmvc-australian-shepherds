@@ -25,10 +25,10 @@ namespace TabloidMVC.Controllers
             return View();
         }
 
-        public IActionResult Delete(int id)
+        public IActionResult DeleteComment(int id)
         {
             _commentRepository.Remove(id);
-            return RedirectToAction("Index");
+            return RedirectToAction("CommentList", "Comment", new { id = id });
         }
         public IActionResult Create(int id)
         {
