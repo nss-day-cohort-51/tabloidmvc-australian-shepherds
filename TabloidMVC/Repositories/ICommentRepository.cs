@@ -7,5 +7,6 @@ namespace TabloidMVC.Repositories
     {
         List<Comment> GetAll();
         void Remove(int id);
+        void Add(Comment comment);
     }
 }

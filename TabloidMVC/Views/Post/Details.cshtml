@@ -36,5 +36,8 @@
         <section class="row post__content">
             <p class="col-sm-12 mt-5">@Html.DisplayFor(model => model.Content)</p>
         </section>
+        <div class="row justify-content-between">
+            <a asp-controller="Comment" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-outline-primary mx-1" title="Comment">Add Comment</a>
+        </div>
     </div>
 </div>
