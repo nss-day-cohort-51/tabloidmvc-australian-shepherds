@@ -1,12 +1,14 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Tabloid</title>
 
     <!-- Font Awesome icons (free version)-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"
+        crossorigin="anonymous"></script>
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="~/css/styles.css" rel="stylesheet">
     <!-- Fonts CSS-->
@@ -14,33 +16,47 @@
     <link rel="stylesheet" href="~/css/body.css">
     <link rel="stylesheet" href="~/css/site.css">
 </head>
+
 <body>
     <header>
         <nav class="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
             <div class="container">
-                <a class="navbar-brand js-scroll-trigger" asp-area="" asp-controller="Home" asp-action="Index">TABLOID</a>
-                <button class="navbar-toggler navbar-toggler-right font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">Menu <i class="fas fa-bars"></i></button>
+                <a class="navbar-brand js-scroll-trigger" asp-area="" asp-controller="Home"
+                    asp-action="Index">TABLOID</a>
+                <button class="navbar-toggler navbar-toggler-right font-weight-bold bg-primary text-white rounded"
+                    type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                    aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">Menu <i
+                        class="fas fa-bars"></i></button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item mx-0 mx-lg-1">
-                                <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" asp-area="" asp-controller="Home" asp-action="Index">HOME</a>
+                                <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" asp-area=""
+                                asp-controller="Home" asp-action="Index">HOME</a>
                             </li>
                             <li class="nav-item mx-0 mx-lg-1">
-                                <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" asp-area="" asp-controller="Post" asp-action="Index">POSTS</a>
+                                <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" asp-area=""
+                                asp-controller="Post" asp-action="Index">POSTS</a>
                             </li>
                             <li class="nav-item mx-0 mx-lg-1">
-                                <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" asp-area="" asp-controller="Post" asp-action="MyPosts">MY POSTS</a>
+                                <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" asp-area=""
+                                asp-controller="Tag" asp-action="Index">TAGS</a>
+                            </li>
+                            <li>
+                                <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" asp-area=""
+                                asp-controller="Post" asp-action="MyPosts">MY POSTS</a>
                             </li>
                             <li class="nav-item mx-0 mx-lg-1">
-                                <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" asp-area="" asp-controller="Account" asp-action="Logout">LOGOUT</a>
+                                <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" asp-area=""
+                                asp-controller="Account" asp-action="Logout">LOGOUT</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item mx-0 mx-lg-1">
-                                <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" asp-area="" asp-controller="Account" asp-action="Login">LOGIN</a>
+                                <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" asp-area=""
+                                asp-controller="Account" asp-action="Login">LOGIN</a>
                             </li>
                         }
                     </ul>
@@ -56,7 +72,10 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial"); 
+    }
     @RenderSection("Scripts", required: false)
 </body>
+
 </html>
