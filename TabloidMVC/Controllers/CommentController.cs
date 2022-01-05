@@ -38,6 +38,28 @@ namespace TabloidMVC.Controllers
             _commentRepository.Remove(id);
             return RedirectToAction("CommentList", "Comment", new { id = post.PostId });
         }
+
+        public IActionResult Edit(int id)
+        {
+            var comment = _commentRepository.GetSingleComment(id);
+            return View(comment);
+              
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Comment comment)
+        {
+            try
+            {
+                _commentRepository.UpdateComment(comment);
+
+                return RedirectToAction("CommentList", "Comment", new { id = comment.PostId });
+            }
+            catch(Exception ex)
+            {
+                return View(comment);
+            }
+        }
         public IActionResult Create(int id)
         {
             return View();
