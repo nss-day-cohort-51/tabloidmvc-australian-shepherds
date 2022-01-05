@@ -27,6 +27,37 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public PostTag GetById(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                       SELECT PostId, TagID
+                         FROM PostTag
+                        WHERE Id = @id;";
+
+                    cmd.Parameters.AddWithValue("@id", id);
+                    var reader = cmd.ExecuteReader();
+
+                    PostTag postTag = new PostTag();
+
+                    if (reader.Read())
+                    {
+                        postTag.Id = id;
+                        postTag.PostId = reader.GetInt32(reader.GetOrdinal("PostId"));
+                        postTag.TagId = reader.GetInt32(reader.GetOrdinal("TagId"));
+                    }
+
+                    reader.Close();
+
+                    return postTag;
+                }
+            }
+        }
+
         public List<PostTag> GetAllPostTagsByPostId(int id)
         {
             using (var conn = Connection)

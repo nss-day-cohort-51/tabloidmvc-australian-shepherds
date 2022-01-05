@@ -20,6 +20,7 @@ namespace TabloidMVC.Controllers
         private readonly ITagRepository _tagRepository;
         private readonly IPostRepository _postRepository;
 
+
         public PostTagController(IPostRepository postRepository, ITagRepository tagRepository, IPostTagRepository postTagRepository)
         {
             _postRepository = postRepository;
@@ -27,7 +28,6 @@ namespace TabloidMVC.Controllers
             _tagRepository = tagRepository;
 
         }
-
         // GET: PostTagController
         public ActionResult Index()
         {
@@ -41,67 +41,23 @@ namespace TabloidMVC.Controllers
         }
 
         // GET: PostTagController/Create
-        public ActionResult Create(int id)
+        public ActionResult Create()
         {
-            IEnumerable<Tag> tags = _tagRepository.GetAllTags();
-
-            List<int> tagsSelected = new List<int>();
-            Post post = _postRepository.GetPublishedPostById(id);
-
-            PostTagFormViewModel vm = new PostTagFormViewModel()
-            {
-                PostTag = new PostTag(),
-                Tag = tags,
-                TagsSelected = tagsSelected,
-                PostId = id
-            };
-            if (post.UserProfileId == int.Parse(User.Claims.ElementAt(0).Value))
-            {
-                return View(vm);
-            }
-            else
-            {
-                return NotFound();
-            }
+            return View();
         }
 
         // POST: PostTagController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(PostTagFormViewModel postTagVM)
-
+        public ActionResult Create(IFormCollection collection)
         {
             try
             {
-                foreach (int TagId in postTagVM.TagsSelected)
-                {
-
-                    PostTag newPostTag = new PostTag
-                    {
-                        PostId = postTagVM.PostId,
-                        TagId = TagId
-                    };
-                    _postTagRepository.AddPostTag(newPostTag);
-                }
-                return RedirectToAction("Details", "Post", new { id = postTagVM.PostId });
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
-
-                IEnumerable<Tag> tags = _tagRepository.GetAllTags();
-
-                List<int> tagsSelected = new List<int>();
-
-                PostTagFormViewModel vm = new PostTagFormViewModel()
-                {
-                    PostTag = new PostTag(),
-                    Tag = tags,
-                    TagsSelected = tagsSelected,
-                    PostId = postTagVM.PostId
-                };
-                return View(vm);
-
-
+                return View();
             }
         }
 

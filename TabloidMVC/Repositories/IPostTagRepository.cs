@@ -10,5 +10,6 @@ namespace TabloidMVC.Repositories
     {
         void AddPostTag(PostTag postTag);
         List<PostTag> GetAllPostTagsByPostId(int id);
+        PostTag GetById(int id);
     }
 }
