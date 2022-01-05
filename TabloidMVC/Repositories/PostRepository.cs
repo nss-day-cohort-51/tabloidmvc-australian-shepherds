@@ -81,9 +81,11 @@ namespace TabloidMVC.Repositories
                     {
                         var userPosts = new List<Post>();
 
+
                         while (reader.Read())
                         {
                             userPosts.Add(NewPostFromReader(reader));
+                            
                         }
 
                         return userPosts;
