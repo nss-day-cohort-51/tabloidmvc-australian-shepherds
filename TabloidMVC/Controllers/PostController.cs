@@ -40,6 +40,9 @@ namespace TabloidMVC.Controllers
                     return NotFound();
                 }
             }
+
+            post.CurrentUserId = GetCurrentUserProfileId();
+
             return View(post);
         }
 
