@@ -331,8 +331,8 @@ namespace TabloidMVC.Repositories
                 ImageLocation = DbUtils.GetNullableString(reader, "HeaderImage"),
                 CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
                 PublishDateTime = DbUtils.GetNullableDateTime(reader, "PublishDateTime"),
-                CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId")),
-                Category = new Category()
+                CategoryId = reader.IsDBNull(reader.GetOrdinal("CategoryId")) ? null : reader.GetInt32(reader.GetOrdinal("CategoryId")),
+                Category = reader.IsDBNull(reader.GetOrdinal("CategoryId")) ? null : new Category()
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("CategoryId")),
                     Name = reader.GetString(reader.GetOrdinal("CategoryName"))
