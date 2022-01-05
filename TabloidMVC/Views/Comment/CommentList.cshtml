@@ -1,60 +1,57 @@
-﻿@model IEnumerable<TabloidMVC.Models.Comment>
+﻿@model TabloidMVC.Models.ViewModels.CommentListView
 
 @{
     ViewData["Title"] = "CommentList";
 }
 
-<h1>CommentList</h1>
+<h1>@Model.Post.Title</h1>
 
 <p>
-    
-        <a asp-controller="Post" asp-action="Index">Back to Posts</a>
+
+    <a asp-controller="Post" asp-action="Index">Back to Post List</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.UserProfileId)
+                Author
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Subject)
+                @Html.DisplayNameFor(model => model.Comment.Subject)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Content)
+                @Html.DisplayNameFor(model => model.Comment.Content)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreateDateTime)
+                Date Created
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            
-            <td>
-                @Html.DisplayFor(modelItem => item.UserProfile.DisplayName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Subject)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateDateTime)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                <a asp-controller="Comment" asp-action="DeleteComment" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-        <p>
-            <a asp-controller="Post" asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary mx-1" title="Comment">Post</a>
-        </p>
+        @foreach (var item in Model.CommentList)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserProfile.DisplayName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subject)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Content)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreateDateTime)
+                </td>
+                <td>
+                    <a asp-controller="Comment" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    <a asp-controller="Comment" asp-action="DeleteComment" asp-route-id="@item.Id">Delete</a> |
+                    <a asp-controller="Post" asp-action="Details" asp-route-id="@item.PostId">View Related Post</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
-
 
