@@ -3,22 +3,17 @@ using Microsoft.AspNetCore.Mvc;
 using TabloidMVC.Repositories;
 using TabloidMVC.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
 using System.Security.Claims;
 using TabloidMVC.Models.ViewModels;
-using TabloidMVC.Repositories;
-using TabloidMVC.Models;
 using System;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using TabloidMVC.Models;
-using TabloidMVC.Repositories;
+
+
 
 namespace TabloidMVC.Controllers
 {
@@ -106,24 +101,22 @@ namespace TabloidMVC.Controllers
         // GET: CategoryController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var c = _categoryRepository.GetCategoryById(id);
+            return View(c);
         }
-
-        // POST: CategoryController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {
             try
             {
+                _categoryRepository.Remove(id);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
                 return View();
             }
-            var categories = _categoryRepository.GetAll();
-            return View(categories);
         }
     }
 }
