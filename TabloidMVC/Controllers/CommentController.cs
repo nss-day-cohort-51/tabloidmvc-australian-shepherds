@@ -25,10 +25,34 @@ namespace TabloidMVC.Controllers
             return View();
         }
 
-        public IActionResult Delete(int id)
+        public IActionResult DeleteComment(int id)
         {
+            var post = _commentRepository.GetSingleComment(id);
+
             _commentRepository.Remove(id);
-            return RedirectToAction("Index");
+            return RedirectToAction("CommentList", "Comment", new { id = post.PostId });
+        }
+
+        public IActionResult Edit(int id)
+        {
+            var comment = _commentRepository.GetSingleComment(id);
+            return View(comment);
+              
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Comment comment)
+        {
+            try
+            {
+                _commentRepository.UpdateComment(comment);
+
+                return RedirectToAction("CommentList", "Comment", new { id = comment.PostId });
+            }
+            catch(Exception ex)
+            {
+                return View(comment);
+            }
         }
         public IActionResult Create(int id)
         {

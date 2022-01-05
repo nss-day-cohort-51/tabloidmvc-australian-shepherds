@@ -100,6 +100,8 @@ namespace TabloidMVC.Controllers
             {
                 return View();
             }
+            var categories = _categoryRepository.GetAll();
+            return View(categories);
         }
     }
 }

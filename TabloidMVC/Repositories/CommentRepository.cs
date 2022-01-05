@@ -72,6 +72,70 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public Comment GetSingleComment(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                       SELECT *
+                         FROM Comment c
+                              LEFT JOIN UserProfile u ON c.UserProfileId = u.id
+                              LEFT JOIN Post p ON c.PostId = p.id
+                        WHERE c.Id = @id
+                        ORDER BY c.CreateDateTime";
+
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        var comment = new Comment();
+
+                        if (reader.Read())
+                        {
+                            comment = NewCommentFromReader(reader);
+                        }
+
+                        return comment;
+                    }
+                }
+            }
+        }
+
+        public void UpdateComment(Comment comment)
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+
+                using(var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            UPDATE Comment 
+                            SET 
+                                PostId = @postId,
+                                UserProfileId = @userProfileId,
+                                Subject = @subject,
+                                Content = @content,
+                                CreateDateTime = @createdatetime
+                            WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@postId", comment.PostId);
+                    cmd.Parameters.AddWithValue("@userProfileId", comment.UserProfileId);
+                    cmd.Parameters.AddWithValue("@subject", comment.Subject);
+                    cmd.Parameters.AddWithValue("@content", comment.Content);
+                    cmd.Parameters.AddWithValue("@createDateTime", comment.CreateDateTime);
+
+                    cmd.Parameters.AddWithValue("@id", comment.Id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         private Comment NewCommentFromReader(SqlDataReader reader)
         {
             return new Comment()
