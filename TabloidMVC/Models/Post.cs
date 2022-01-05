@@ -7,6 +7,7 @@ namespace TabloidMVC.Models
     public class Post
     {
         public int Id { get; set; }
+        public int CurrentUserId { get; set; }
 
         [Required]
         public string Title { get; set; }
