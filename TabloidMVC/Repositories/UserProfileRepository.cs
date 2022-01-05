@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using TabloidMVC.Models;
 using TabloidMVC.Utils;
+using System.Collections.Generic;
+using Microsoft.Data.SqlClient;
 
 namespace TabloidMVC.Repositories
 {
@@ -52,6 +54,53 @@ namespace TabloidMVC.Repositories
                     return userProfile;
                 }
             }
+        }
+
+        public List<UserProfile> GetAll()
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+
+                using(var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT *, UserType.Id AS 'UserTypeID', UserType.Name AS 'UserTypeName' FROM UserProfile JOIN UserType ON UserType.Id = UserProfile.UserTypeId";
+
+                    using(var reader = cmd.ExecuteReader())
+                    {
+                        var profiles = new List<UserProfile>();
+
+                        while (reader.Read())
+                        {
+                            profiles.Add(NewProfileFromReader(reader));
+                        }
+
+                        return profiles;
+                    }
+
+                    
+                }
+            }
+        }
+
+        private UserProfile NewProfileFromReader(SqlDataReader reader)
+        {
+            return new UserProfile()
+            {
+                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                DisplayName = reader.GetString(reader.GetOrdinal("DisplayName")),
+                FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                ImageLocation = DbUtils.GetNullableString(reader, "ImageLocation"),
+                CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
+                Email = reader.GetString(reader.GetOrdinal("Email")),
+                UserTypeId = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
+                UserType = new UserType()
+                {
+                    Id = reader.GetInt32(reader.GetOrdinal("UserTypeID")),
+                    Name = reader.GetString(reader.GetOrdinal("UserTypeName"))
+                }
+            };
         }
     }
 }
