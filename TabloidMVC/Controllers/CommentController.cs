@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using TabloidMVC.Repositories;
 using TabloidMVC.Models;
 using Microsoft.VisualBasic;
+using TabloidMVC.Models.ViewModels;
 
 namespace TabloidMVC.Controllers
 {
@@ -15,10 +16,15 @@ namespace TabloidMVC.Controllers
         public class CommentController : Controller
         {
             private readonly ICommentRepository _commentRepository;
+            private readonly IPostRepository _postRepository;
+            private readonly IUserProfileRepository _userProfileRepository;
 
-            public CommentController(ICommentRepository commentRepository)
+            public CommentController(ICommentRepository commentRepository, IPostRepository postRepository, IUserProfileRepository userProfileRepository)
             {
                 _commentRepository = commentRepository;
+                _postRepository = postRepository;
+                _userProfileRepository = userProfileRepository;
+
             }
             public IActionResult Index()
         {
@@ -78,10 +84,17 @@ namespace TabloidMVC.Controllers
 
         public IActionResult CommentList(int id)
         {
-
             var postCommentList = _commentRepository.GetCommentsByPostId(id);
+            var post = _postRepository.GetPublishedPostById(id);
+            var user = _userProfileRepository.GetUserById(GetCurrentUserProfileId());
+            var viewCommentList = new CommentListView
+            {
+                CommentList = postCommentList,
+                Post = post,
+                User = user            
+            };
 
-            return View(postCommentList);
+            return View(viewCommentList);
         }
 
         private int GetCurrentUserProfileId()
