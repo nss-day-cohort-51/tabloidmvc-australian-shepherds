@@ -68,22 +68,22 @@ namespace TabloidMVC.Controllers
         // POST: PostTagController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(PostTagFormViewModel postTagViewModel)
+        public ActionResult Create(PostTagFormViewModel postTagVM)
 
         {
             try
             {
-                foreach (int TagId in postTagViewModel.TagsSelected)
+                foreach (int TagId in postTagVM.TagsSelected)
                 {
 
                     PostTag newPostTag = new PostTag
                     {
-                        PostId = postTagViewModel.PostId,
+                        PostId = postTagVM.PostId,
                         TagId = TagId
                     };
                     _postTagRepository.AddPostTag(newPostTag);
                 }
-                return RedirectToAction("Details", "Post", new { id = postTagViewModel.PostId });
+                return RedirectToAction("Details", "Post", new { id = postTagVM.PostId });
             }
             catch
             {
@@ -97,7 +97,7 @@ namespace TabloidMVC.Controllers
                     PostTag = new PostTag(),
                     Tag = tags,
                     TagsSelected = tagsSelected,
-                    PostId = postTagViewModel.PostId
+                    PostId = postTagVM.PostId
                 };
                 return View(vm);
 
