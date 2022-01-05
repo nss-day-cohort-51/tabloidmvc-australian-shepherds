@@ -27,7 +27,7 @@ namespace TabloidMVC.Models
 
         [Required]
         [DisplayName("Category")]
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public Category Category { get; set; }
 
         [DisplayName("Author")]

@@ -42,7 +42,7 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"SELECT id, [Name] 
-                                        FROM Catagory
+                                        FROM Category
                                         WHERE Id = @id";
 
                     cmd.Parameters.AddWithValue("@id", id);

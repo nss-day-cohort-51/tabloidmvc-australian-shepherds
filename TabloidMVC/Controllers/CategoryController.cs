@@ -23,7 +23,8 @@ namespace TabloidMVC.Controllers
         }
         public ActionResult Delete(int id)
         {
-            return View("Delete");
+            var c = _categoryRepository.GetCategoryById(id);
+            return View(c);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -31,7 +32,8 @@ namespace TabloidMVC.Controllers
         {
             try
             {
-                return RedirectToAction(nameof(Delete));
+                _categoryRepository.Remove(id);
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
