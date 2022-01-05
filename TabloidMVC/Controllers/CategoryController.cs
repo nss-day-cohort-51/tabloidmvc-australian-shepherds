@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,23 @@ namespace TabloidMVC.Controllers
         {
             var categories = _categoryRepository.GetAll();
             return View(categories);
+        }
+        public ActionResult Delete(int id)
+        {
+            return View("Delete");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, IFormCollection collection)
+        {
+            try
+            {
+                return RedirectToAction(nameof(Delete));
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
         }
     }
 }
