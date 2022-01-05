@@ -1,12 +1,38 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using TabloidMVC.Models;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using TabloidMVC.Models;
 
 namespace TabloidMVC.Repositories
 {
     public class CategoryRepository : BaseRepository, ICategoryRepository
     {
         public CategoryRepository(IConfiguration config) : base(config) { }
+        public void AddNew(Category category)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        INSERT INTO Category (
+                            Name )
+                        OUTPUT INSERTED.ID
+                        VALUES (
+                            @Name )";
+                    cmd.Parameters.AddWithValue("@Name", category.Name);
+
+                    category.Id = (int)cmd.ExecuteScalar();
+                }
+            }
+        }
         public List<Category> GetAll()
         {
             using (var conn = Connection)
