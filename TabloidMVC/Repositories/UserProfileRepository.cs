@@ -56,12 +56,38 @@ namespace TabloidMVC.Repositories
             }
         }
 
-        public UserProfile GetUserById(int id)
+        public void AddUser(UserProfile profile)
         {
-            using(var conn = Connection)
+            using (var conn = Connection)
             {
                 conn.Open();
-                using(var cmd = conn.CreateCommand())
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        INSERT INTO UserProfile (
+                            DisplayName, FirstName, LastName, CreateDateTime,
+                            Email, UserTypeId)
+                        OUTPUT INSERTED.ID
+                        VALUES (
+                            @displayName, @firstName, @lastName, @CreateDateTime, @Email, @UserTypeId )";
+                    cmd.Parameters.AddWithValue("@displayName", profile.DisplayName);
+                    cmd.Parameters.AddWithValue("@firstName", profile.FirstName);
+                    cmd.Parameters.AddWithValue("@lastName", profile.LastName);
+                    cmd.Parameters.AddWithValue("@CreateDateTime", profile.CreateDateTime);
+                    cmd.Parameters.AddWithValue("@Email", profile.Email);
+                    cmd.Parameters.AddWithValue("@UserTypeId", 2);
+
+                    profile.Id = (int)cmd.ExecuteScalar();
+                }
+            }
+        }
+
+        public UserProfile GetUserById(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
                             SELECT u.id, u.FirstName, u.LastName, u.DisplayName, u.Email,
@@ -103,15 +129,15 @@ namespace TabloidMVC.Repositories
         }
         public List<UserProfile> GetAll()
         {
-            using(var conn = Connection)
+            using (var conn = Connection)
             {
                 conn.Open();
 
-                using(var cmd = conn.CreateCommand())
+                using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = "SELECT *, UserType.Id AS 'UserTypeID', UserType.Name AS 'UserTypeName' FROM UserProfile JOIN UserType ON UserType.Id = UserProfile.UserTypeId";
 
-                    using(var reader = cmd.ExecuteReader())
+                    using (var reader = cmd.ExecuteReader())
                     {
                         var profiles = new List<UserProfile>();
 
@@ -123,7 +149,7 @@ namespace TabloidMVC.Repositories
                         return profiles;
                     }
 
-                    
+
                 }
             }
         }
