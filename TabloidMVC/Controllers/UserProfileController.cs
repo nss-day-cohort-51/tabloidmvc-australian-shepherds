@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TabloidMVC.Models;
 using TabloidMVC.Repositories;
 using TabloidMVC.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TabloidMVC.Controllers
 {
@@ -19,6 +20,7 @@ namespace TabloidMVC.Controllers
         }
 
         // GET: UserProfileController
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             var profiles = _userProfileRepository.GetAll();
