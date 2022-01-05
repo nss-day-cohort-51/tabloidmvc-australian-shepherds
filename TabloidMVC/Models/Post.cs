@@ -7,6 +7,7 @@ namespace TabloidMVC.Models
     public class Post
     {
         public int Id { get; set; }
+        public int CurrentUserId { get; set; }
 
         [Required]
         public string Title { get; set; }
@@ -27,7 +28,7 @@ namespace TabloidMVC.Models
 
         [Required]
         [DisplayName("Category")]
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public Category Category { get; set; }
 
         [DisplayName("Author")]

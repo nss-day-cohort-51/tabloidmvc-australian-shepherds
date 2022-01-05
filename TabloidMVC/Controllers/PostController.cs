@@ -40,7 +40,31 @@ namespace TabloidMVC.Controllers
                     return NotFound();
                 }
             }
+
+            post.CurrentUserId = GetCurrentUserProfileId();
+
             return View(post);
+        }
+
+        public IActionResult Subscribe(int id)
+        {
+
+            try
+            {
+
+                var currentUserId = GetCurrentUserProfileId();
+                var userId = _postRepository.GetAuthorIdByPostId(id);
+                var currentDateTime = DateTime.Now;
+
+                _postRepository.Subscribe(userId, currentUserId, currentDateTime);
+
+                return RedirectToAction("Details", "Post", new { id = id });
+            }
+            catch(Exception ex)
+            {
+                return View();
+            };
+
         }
 
         public IActionResult Create()
