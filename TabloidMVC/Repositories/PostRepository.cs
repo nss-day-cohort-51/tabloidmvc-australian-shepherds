@@ -238,6 +238,75 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public int GetSubscribed(int currentUserId)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM Subscription WHERE SubscriberUserProfileId = @currentUserId";
+
+                    cmd.Parameters.AddWithValue("@currentUserId", currentUserId);
+
+                    var reader = cmd.ExecuteReader();
+
+                    int userId = 0;
+
+                    if (reader.Read())
+                    {
+                        userId = reader.GetInt32(reader.GetOrdinal("ProviderUserProfileId"));
+                    }
+
+                    reader.Close();
+
+                    return userId;
+                }
+            }
+        }
+
+        public List<Post> GetSubscribedBySubscribedId(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT p.Id, p.Title, p.Content, 
+                              p.ImageLocation AS HeaderImage,
+                              p.CreateDateTime, p.PublishDateTime, p.IsApproved,
+                              p.CategoryId, p.UserProfileId,
+                              c.[Name] AS CategoryName,
+                              u.FirstName, u.LastName, u.DisplayName, 
+                              u.Email, u.CreateDateTime, u.ImageLocation AS AvatarImage,
+                              u.UserTypeId, 
+                              ut.[Name] AS UserTypeName,
+                              s.*
+                         FROM Post p
+                               JOIN Category c ON p.CategoryId = c.id
+                               JOIN UserProfile u ON p.UserProfileId = u.id
+                               JOIN UserType ut ON u.UserTypeId = ut.id
+                               JOIN Subscription s ON s.ProviderUserProfileId = p.UserProfileId
+                        WHERE s.ProviderUserProfileId = @id";
+
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    var reader = cmd.ExecuteReader();
+
+                    var posts = new List<Post>();
+
+                    while (reader.Read())
+                    {
+                        posts.Add(NewPostFromReader(reader));
+                    }
+
+                    reader.Close();
+
+                    return posts;
+                }
+            }
+        }
+
         public void Add(Post post)
         {
             using (var conn = Connection)
