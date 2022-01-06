@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TabloidMVC.Models.Post>
+﻿@model TabloidMVC.Models.ViewModels.PostDropDownViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -10,27 +10,34 @@
 
     <p>
         <a class="btn btn-primary" asp-action="Create">New Post</a>
+
+        @using (Html.BeginForm())
+        {
+            @Html.ListBoxFor(m => m.selectedUsers, Model.UserIds)
+            <input type="submit" value="Filter" />
+        }
+        <a class="btn btn-primary" asp-action="Index">Show All Posts</a>
     </p>
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Title)
+                    @Html.DisplayNameFor(model => model.Post.Title)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.UserProfileId)
+                    @Html.DisplayNameFor(model => model.Post.UserProfileId)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.CategoryId)
+                    @Html.DisplayNameFor(model => model.Post.CategoryId)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.PublishDateTime)
+                    @Html.DisplayNameFor(model => model.Post.PublishDateTime)
                 </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.Posts)
             {
                 <tr>
                     <td>
