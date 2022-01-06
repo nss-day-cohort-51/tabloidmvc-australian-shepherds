@@ -3,6 +3,7 @@ using TabloidMVC.Models;
 using TabloidMVC.Utils;
 using System.Collections.Generic;
 using Microsoft.Data.SqlClient;
+using System;
 
 namespace TabloidMVC.Repositories
 {
@@ -226,7 +227,7 @@ namespace TabloidMVC.Repositories
                             FirstName = @firstName,
                             LastName = @lastName,
                             Email = @email,
-                            CreateDateTime = @createdatetime,
+                            CreateDateTime = @createDateTime,
                             ImageLocation = @imageLocation,
                             UserTypeId = @userTypeId
                             WHERE Id = @id";
@@ -236,7 +237,7 @@ namespace TabloidMVC.Repositories
                     cmd.Parameters.AddWithValue("@lastName", userProfile.LastName);
                     cmd.Parameters.AddWithValue("@email", userProfile.Email);
                     cmd.Parameters.AddWithValue("@createDateTime", userProfile.CreateDateTime);
-                    cmd.Parameters.AddWithValue("@imageLocation", userProfile.ImageLocation);
+                    cmd.Parameters.AddWithValue("@imageLocation", userProfile.ImageLocation == null ? DBNull.Value : userProfile.ImageLocation);
                     cmd.Parameters.AddWithValue("@userTypeId", userProfile.UserTypeId);
 
                     cmd.Parameters.AddWithValue("@id", userProfile.Id);

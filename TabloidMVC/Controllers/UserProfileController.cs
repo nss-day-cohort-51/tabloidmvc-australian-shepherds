@@ -77,10 +77,11 @@ namespace TabloidMVC.Controllers
         {
             try
             {
+                userProfile.ImageLocation = null;
                 _userProfileRepository.UpdateUser(userProfile);
                 return RedirectToAction("Index");
             }
-            catch
+            catch (Exception ex)
             {
                 return View(userProfile);
             }
