@@ -13,10 +13,24 @@
 
         @using (Html.BeginForm())
         {
-            @Html.ListBoxFor(m => m.selectedUsers, Model.UserIds)
-            <input type="submit" value="Filter" />
+            <ul>
+
+                <li>
+                    <h4>Author</h4>
+                    @Html.ListBoxFor(m => m.selectedUsers, Model.UserIds)
+                </li>
+
+                <li>
+                    <h4>Category</h4>
+                    @Html.ListBoxFor(m => m.selectedCategories, Model.CategoriesIds)
+                </li>
+
+            </ul>
+
+            <input class="btn btn-primary" type="submit" value="Filter" />
         }
-        <a class="btn btn-primary" asp-action="Index">Show All Posts</a>
+        <br />
+        <a class="btn btn-primary" asp-action="Index">Reset Filters</a>
     </p>
     <table class="table table-striped">
         <thead>

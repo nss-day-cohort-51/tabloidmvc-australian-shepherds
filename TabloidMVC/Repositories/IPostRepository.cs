@@ -17,5 +17,7 @@ namespace TabloidMVC.Repositories
         int GetAuthorIdByPostId(int postId);
         List<Post> GetSubscribedBySubscribedId(int id);
         int GetSubscribed(int currentUserId);
+        List<Post> GetUsersPublishedPostsByCategoryId(int id);
+        List<Post> GetUsersPublishedPostsByCategoryIdAndUserId(int userId, int catId);
     }
 }

@@ -8,6 +8,7 @@ using TabloidMVC.Repositories;
 using TabloidMVC.Models;
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 
 namespace TabloidMVC.Controllers
 {
@@ -32,7 +33,8 @@ namespace TabloidMVC.Controllers
             var vm = new PostDropDownViewModel()
             {
                 Posts = _postRepository.GetAllPublishedPosts(),
-                UserIds = new MultiSelectList(_userRepository.GetAll(), "Id", "FullName")
+                UserIds = new MultiSelectList(_userRepository.GetAll(), "Id", "FullName"),
+                CategoriesIds = new MultiSelectList(_categoryRepository.GetAll(), "Id", "Name")
             };  
             return View(vm);
         }
@@ -40,11 +42,32 @@ namespace TabloidMVC.Controllers
         [HttpPost]
         public IActionResult Index(PostDropDownViewModel vm)
         {
+            var Posts = new List<Post>();
 
+            if(vm.selectedCategories != null && vm.selectedUsers != null)
+            {
+                Posts = _postRepository.GetUsersPublishedPostsByCategoryIdAndUserId(vm.selectedUsers[0], vm.selectedCategories[0]);
+            }
+            else if(vm.selectedUsers != null)
+            {
+                Posts = _postRepository.GetUsersPublishedPostsByUserId(vm.selectedUsers[0]);
+            }
+            else if(vm.selectedCategories != null)
+            {
+                Posts = _postRepository.GetUsersPublishedPostsByCategoryId(vm.selectedCategories[0]);
+            }
+            else
+            {
+                Posts = _postRepository.GetAllPublishedPosts();
+            }
+
+            var UserIds = new MultiSelectList(_userRepository.GetAll(), "Id", "FullName");
+            var CategoriesIds = new MultiSelectList(_categoryRepository.GetAll(), "Id", "Name"); 
             vm = new PostDropDownViewModel()
             {
-                Posts = _postRepository.GetUsersPublishedPostsByUserId(vm.selectedUsers[0]),
-                UserIds = new MultiSelectList(_userRepository.GetAll(), "Id", "FullName")
+                Posts = Posts,
+                UserIds = UserIds,
+                CategoriesIds = CategoriesIds,
             };
             return View(vm);
         }
