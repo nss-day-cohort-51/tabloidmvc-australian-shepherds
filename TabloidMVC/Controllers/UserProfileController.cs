@@ -110,5 +110,36 @@ namespace TabloidMVC.Controllers
                 return View();
             }
         }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult ReactivateUser()
+        {
+            var profiles = _userProfileRepository.GetAll();
+
+            return View(profiles);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult Reactivate(int id)
+        {
+            var user = _userProfileRepository.GetById(id);
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Reactivate(int id, IFormCollection collection, UserProfile userProfile)
+        {
+            try
+            {
+                _userProfileRepository.ReactivateUser(userProfile);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return View();
+            }
+        }
     }
 }
