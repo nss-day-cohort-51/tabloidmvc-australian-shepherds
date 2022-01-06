@@ -7,6 +7,7 @@ using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
 using TabloidMVC.Models;
 using System;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace TabloidMVC.Controllers
 {
@@ -15,17 +16,37 @@ namespace TabloidMVC.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IUserProfileRepository _userRepository;
 
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository)
+        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, IUserProfileRepository userRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
+            _userRepository = userRepository;
         }
 
+        
         public IActionResult Index()
         {
-            var posts = _postRepository.GetAllPublishedPosts();
-            return View(posts);
+
+            var vm = new PostDropDownViewModel()
+            {
+                Posts = _postRepository.GetAllPublishedPosts(),
+                UserIds = new MultiSelectList(_userRepository.GetAll(), "Id", "FullName")
+            };  
+            return View(vm);
+        }
+
+        [HttpPost]
+        public IActionResult Index(PostDropDownViewModel vm)
+        {
+
+            vm = new PostDropDownViewModel()
+            {
+                Posts = _postRepository.GetUsersPublishedPostsByUserId(vm.selectedUsers[0]),
+                UserIds = new MultiSelectList(_userRepository.GetAll(), "Id", "FullName")
+            };
+            return View(vm);
         }
 
         public IActionResult Details(int id)
