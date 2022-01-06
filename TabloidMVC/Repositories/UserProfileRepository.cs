@@ -211,5 +211,39 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+        public void UpdateUser(UserProfile userProfile)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            UPDATE UserProfile 
+                            SET 
+                            DisplayName = @displayName,
+                            FirstName = @firstName,
+                            LastName = @lastName,
+                            Email = @email,
+                            CreateDateTime = @createdatetime,
+                            ImageLocation = @imageLocation,
+                            UserTypeId = @userTypeId
+                            WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@displayName", userProfile.DisplayName);
+                    cmd.Parameters.AddWithValue("@firstName", userProfile.FirstName);
+                    cmd.Parameters.AddWithValue("@lastName", userProfile.LastName);
+                    cmd.Parameters.AddWithValue("@email", userProfile.Email);
+                    cmd.Parameters.AddWithValue("@createDateTime", userProfile.CreateDateTime);
+                    cmd.Parameters.AddWithValue("@imageLocation", userProfile.ImageLocation);
+                    cmd.Parameters.AddWithValue("@userTypeId", userProfile.UserTypeId);
+
+                    cmd.Parameters.AddWithValue("@id", userProfile.Id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }

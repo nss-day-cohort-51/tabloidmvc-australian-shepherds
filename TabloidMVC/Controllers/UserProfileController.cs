@@ -66,21 +66,23 @@ namespace TabloidMVC.Controllers
         // GET: UserProfileController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var user = _userProfileRepository.GetUserById(id);
+            return View(user);
         }
 
         // POST: UserProfileController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(UserProfile userProfile)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                _userProfileRepository.UpdateUser(userProfile);
+                return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return View(userProfile);
             }
         }
 
