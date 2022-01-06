@@ -176,6 +176,136 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public void Subscribe(int userId, int currentUserId, DateTime beginDateTime)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        INSERT INTO Subscription (
+                            SubscriberUserProfileId, ProviderUserProfileId, BeginDateTime)
+                        VALUES (
+                            @subscriberUserProfileId, @providerUserProfileId, @beginDateTime)";
+                    cmd.Parameters.AddWithValue("@subscriberUserProfileId", currentUserId);
+                    cmd.Parameters.AddWithValue("@providerUserProfileId", userId);
+                    cmd.Parameters.AddWithValue("@beginDateTime", beginDateTime);
+                    
+
+                    cmd.ExecuteScalar();
+                }
+            }
+        }
+
+        public int GetAuthorIdByPostId(int postId)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT p.Id, p.Title, p.Content, 
+                              p.ImageLocation AS HeaderImage,
+                              p.CreateDateTime, p.PublishDateTime, p.IsApproved,
+                              p.CategoryId, p.UserProfileId,
+                              c.[Name] AS CategoryName,
+                              u.FirstName, u.LastName, u.DisplayName, 
+                              u.Email, u.CreateDateTime, u.ImageLocation AS AvatarImage,
+                              u.UserTypeId, 
+                              ut.[Name] AS UserTypeName
+                         FROM Post p
+                              LEFT JOIN Category c ON p.CategoryId = c.id
+                              LEFT JOIN UserProfile u ON p.UserProfileId = u.id
+                              LEFT JOIN UserType ut ON u.UserTypeId = ut.id
+                        WHERE p.id = @postId";
+
+                    cmd.Parameters.AddWithValue("@postId", postId);
+
+                    var reader = cmd.ExecuteReader();
+
+                    Post post = null;
+
+                    if (reader.Read())
+                    {
+                        post = NewPostFromReader(reader);
+                    }
+
+                    reader.Close();
+
+                    return post.UserProfileId;
+                }
+            }
+        }
+
+        public int GetSubscribed(int currentUserId)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM Subscription WHERE SubscriberUserProfileId = @currentUserId";
+
+                    cmd.Parameters.AddWithValue("@currentUserId", currentUserId);
+
+                    var reader = cmd.ExecuteReader();
+
+                    int userId = 0;
+
+                    if (reader.Read())
+                    {
+                        userId = reader.GetInt32(reader.GetOrdinal("ProviderUserProfileId"));
+                    }
+
+                    reader.Close();
+
+                    return userId;
+                }
+            }
+        }
+
+        public List<Post> GetSubscribedBySubscribedId(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT p.Id, p.Title, p.Content, 
+                              p.ImageLocation AS HeaderImage,
+                              p.CreateDateTime, p.PublishDateTime, p.IsApproved,
+                              p.CategoryId, p.UserProfileId,
+                              c.[Name] AS CategoryName,
+                              u.FirstName, u.LastName, u.DisplayName, 
+                              u.Email, u.CreateDateTime, u.ImageLocation AS AvatarImage,
+                              u.UserTypeId, 
+                              ut.[Name] AS UserTypeName,
+                              s.*
+                         FROM Post p
+                               JOIN Category c ON p.CategoryId = c.id
+                               JOIN UserProfile u ON p.UserProfileId = u.id
+                               JOIN UserType ut ON u.UserTypeId = ut.id
+                               JOIN Subscription s ON s.ProviderUserProfileId = p.UserProfileId
+                        WHERE s.ProviderUserProfileId = @id";
+
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    var reader = cmd.ExecuteReader();
+
+                    var posts = new List<Post>();
+
+                    while (reader.Read())
+                    {
+                        posts.Add(NewPostFromReader(reader));
+                    }
+
+                    reader.Close();
+
+                    return posts;
+                }
+            }
+        }
 
         public void Add(Post post)
         {
@@ -270,8 +400,8 @@ namespace TabloidMVC.Repositories
                 ImageLocation = DbUtils.GetNullableString(reader, "HeaderImage"),
                 CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
                 PublishDateTime = DbUtils.GetNullableDateTime(reader, "PublishDateTime"),
-                CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId")),
-                Category = new Category()
+                CategoryId = reader.IsDBNull(reader.GetOrdinal("CategoryId")) ? null : reader.GetInt32(reader.GetOrdinal("CategoryId")),
+                Category = reader.IsDBNull(reader.GetOrdinal("CategoryId")) ? null : new Category()
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("CategoryId")),
                     Name = reader.GetString(reader.GetOrdinal("CategoryName"))

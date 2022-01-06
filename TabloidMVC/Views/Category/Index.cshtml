@@ -4,12 +4,16 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="container pt-5">
+<h1>Categories</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create">Create New</a>
+    }
 </p>
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>
@@ -31,11 +35,12 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new {  id=item.Id  })
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ })
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id})
             </td>
         </tr>
 }
     </tbody>
 </table>
+</div>
