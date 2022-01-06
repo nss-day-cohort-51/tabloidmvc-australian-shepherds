@@ -90,7 +90,8 @@ namespace TabloidMVC.Controllers
         // GET: UserProfileController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var user = _userProfileRepository.GetById(id);
+            return View(user);
         }
 
         // POST: UserProfileController/Delete/5
@@ -100,10 +101,12 @@ namespace TabloidMVC.Controllers
         {
             try
             {
+                _userProfileRepository.Remove(id);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 return View();
             }
         }
