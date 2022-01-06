@@ -88,7 +88,7 @@ namespace TabloidMVC.Controllers
         }
 
         // GET: UserProfileController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Deactivate(int id)
         {
             var user = _userProfileRepository.GetById(id);
             return View(user);
@@ -97,7 +97,7 @@ namespace TabloidMVC.Controllers
         // POST: UserProfileController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Deactivate(int id, IFormCollection collection)
         {
             try
             {
