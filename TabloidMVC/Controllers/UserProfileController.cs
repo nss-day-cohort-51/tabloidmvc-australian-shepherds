@@ -97,11 +97,11 @@ namespace TabloidMVC.Controllers
         // POST: UserProfileController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Deactivate(int id, IFormCollection collection)
+        public ActionResult Deactivate(int id, IFormCollection collection, UserProfile userProfile)
         {
             try
             {
-                _userProfileRepository.Remove(id);
+                _userProfileRepository.DeactivateUser(userProfile);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
