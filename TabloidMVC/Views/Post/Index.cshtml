@@ -17,18 +17,18 @@
 
                 <li>
                     <h4>Author</h4>
-                    @Html.ListBoxFor(m => m.selectedUsers, Model.UserIds)
+                    @Html.DropDownListFor(m => m.selectedUser, new SelectList(Model.UserIds, "Id", "FullName"))
                 </li>
 
                 <li>
                     <h4>Category</h4>
-                    @Html.ListBoxFor(m => m.selectedCategories, Model.CategoriesIds)
+                    @Html.DropDownListFor(m => m.selectedCategory, new SelectList(Model.CategoriesIds, "Id", "Name"))
                 </li>
 
             </ul>
-
             <input class="btn btn-primary" type="submit" value="Filter" />
         }
+        
         <br />
         <a class="btn btn-primary" asp-action="Index">Reset Filters</a>
     </p>

@@ -8,10 +8,10 @@ namespace TabloidMVC.Models.ViewModels
 {
     public class PostDropDownViewModel
     {
-        public MultiSelectList CategoriesIds { get; set;}
-        public MultiSelectList UserIds { get; set; }
-        public List<int> selectedUsers { get; set; }
-        public List<int> selectedCategories { get; set; }
+        public List<Category> CategoriesIds { get; set;}
+        public List<UserProfile> UserIds { get; set; }
+        public int selectedUser { get; set; }
+        public int selectedCategory { get; set; }
         public List<Post> Posts {get; set;}
         public Post Post { get; set; }
     }
