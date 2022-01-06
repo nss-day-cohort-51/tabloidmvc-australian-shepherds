@@ -2,23 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using TabloidMVC.Repositories;
 using TabloidMVC.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.VisualBasic;
 using System.Security.Claims;
-using TabloidMVC.Models.ViewModels;
-using TabloidMVC.Repositories;
-using TabloidMVC.Models;
 using System;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using TabloidMVC.Models;
-using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
 {
@@ -50,10 +35,7 @@ namespace TabloidMVC.Controllers
         {
             string currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             int id = int.Parse(currentUserId);
-            Console.WriteLine(id);
             UserProfile user = _userProfileRepository.GetById(id);
-            Console.WriteLine(user);
-            Console.WriteLine(user.UserTypeId);
 
             if (user.UserTypeId == 0)
             {
@@ -85,22 +67,26 @@ namespace TabloidMVC.Controllers
         // GET: CategoryController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            Category category = _categoryRepository.GetById(id);
+            return View(category);
         }
 
         // POST: CategoryController/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public IActionResult Edit(Category category)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                _categoryRepository.Update(category);
+
+                return RedirectToAction("Index");
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return View(category);
             }
+
+
         }
 
         // GET: CategoryController/Delete/5
