@@ -94,6 +94,95 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public List<Post> GetUsersPublishedPostsByCategoryId(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                       SELECT p.Id, p.Title, p.Content, 
+                              p.ImageLocation AS HeaderImage,
+                              p.CreateDateTime, p.PublishDateTime, p.IsApproved,
+                              p.CategoryId, p.UserProfileId,
+                              c.[Name] AS CategoryName,
+                              u.FirstName, u.LastName, u.DisplayName, 
+                              u.Email, u.CreateDateTime, u.ImageLocation AS AvatarImage,
+                              u.UserTypeId, 
+                              ut.[Name] AS UserTypeName
+                         FROM Post p
+                              LEFT JOIN Category c ON p.CategoryId = c.id
+                              LEFT JOIN UserProfile u ON p.UserProfileId = u.id
+                              LEFT JOIN UserType ut ON u.UserTypeId = ut.id
+                        WHERE IsApproved = 1 AND PublishDateTime < SYSDATETIME() AND CategoryId = @id 
+                        ORDER BY PublishDateTime";
+
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        var userPosts = new List<Post>();
+
+
+                        while (reader.Read())
+                        {
+                            userPosts.Add(NewPostFromReader(reader));
+
+                        }
+
+                        return userPosts;
+                    }
+                }
+            }
+        }
+
+        public List<Post> GetUsersPublishedPostsByCategoryIdAndUserId(int userId, int catId)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                       SELECT p.Id, p.Title, p.Content, 
+                              p.ImageLocation AS HeaderImage,
+                              p.CreateDateTime, p.PublishDateTime, p.IsApproved,
+                              p.CategoryId, p.UserProfileId,
+                              c.[Name] AS CategoryName,
+                              u.FirstName, u.LastName, u.DisplayName, 
+                              u.Email, u.CreateDateTime, u.ImageLocation AS AvatarImage,
+                              u.UserTypeId, 
+                              ut.[Name] AS UserTypeName
+                         FROM Post p
+                              LEFT JOIN Category c ON p.CategoryId = c.id
+                              LEFT JOIN UserProfile u ON p.UserProfileId = u.id
+                              LEFT JOIN UserType ut ON u.UserTypeId = ut.id
+                        WHERE IsApproved = 1 AND PublishDateTime < SYSDATETIME() AND CategoryId = @catId AND UserProfileId = @userId  
+                        ORDER BY PublishDateTime";
+
+                    cmd.Parameters.AddWithValue("@catId", catId);
+                    cmd.Parameters.AddWithValue("@userId", userId);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        var userPosts = new List<Post>();
+
+
+                        while (reader.Read())
+                        {
+                            userPosts.Add(NewPostFromReader(reader));
+
+                        }
+
+                        return userPosts;
+                    }
+                }
+            }
+        }
+
         public Post GetPublishedPostById(int id)
         {
             using (var conn = Connection)

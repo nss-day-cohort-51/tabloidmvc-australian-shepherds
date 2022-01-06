@@ -8,6 +8,7 @@ using TabloidMVC.Repositories;
 using TabloidMVC.Models;
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 
 namespace TabloidMVC.Controllers
 {
@@ -32,19 +33,64 @@ namespace TabloidMVC.Controllers
             var vm = new PostDropDownViewModel()
             {
                 Posts = _postRepository.GetAllPublishedPosts(),
-                UserIds = new MultiSelectList(_userRepository.GetAll(), "Id", "FullName")
-            };  
+                UserIds = _userRepository.GetAll(),
+                CategoriesIds = _categoryRepository.GetAll()
+            };
+            
+            vm.selectedCategory = 0;
+            vm.selectedUser = 0;
+            vm.UserIds.Add(new UserProfile()
+            {
+                Id = 0,
+                FirstName = "-select-"
+            });
+            vm.CategoriesIds.Add(new Category()
+            {
+                Id = 0,
+                Name = "-select-"
+            });
             return View(vm);
         }
 
         [HttpPost]
         public IActionResult Index(PostDropDownViewModel vm)
         {
+            var Posts = new List<Post>();
 
+            if(vm.selectedCategory != 0 && vm.selectedUser != 0)
+            {
+                Posts = _postRepository.GetUsersPublishedPostsByCategoryIdAndUserId(vm.selectedUser, vm.selectedCategory);
+            }
+            else if(vm.selectedUser != 0)
+            {
+                Posts = _postRepository.GetUsersPublishedPostsByUserId(vm.selectedUser);
+            }
+            else if(vm.selectedCategory != 0)
+            {
+                Posts = _postRepository.GetUsersPublishedPostsByCategoryId(vm.selectedCategory);
+            }
+            else
+            {
+                Posts = _postRepository.GetAllPublishedPosts();
+            }
+
+            var UserIds = _userRepository.GetAll();
+            var CategoriesIds = _categoryRepository.GetAll();
+            UserIds.Add(new UserProfile()
+            {
+                Id = 0,
+                FirstName = "-select-"
+            });
+            CategoriesIds.Add(new Category()
+            {
+                Id = 0,
+                Name = "-select-"
+            });
             vm = new PostDropDownViewModel()
             {
-                Posts = _postRepository.GetUsersPublishedPostsByUserId(vm.selectedUsers[0]),
-                UserIds = new MultiSelectList(_userRepository.GetAll(), "Id", "FullName")
+                Posts = Posts,
+                UserIds = UserIds,
+                CategoriesIds = CategoriesIds,
             };
             return View(vm);
         }
