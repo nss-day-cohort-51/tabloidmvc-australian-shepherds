@@ -1,5 +1,5 @@
-﻿DELETE FROM Category WHERE Id = 1
+﻿INSERT INTO UserType(Name)
+VALUES ('Deactivated')
 
-select Name, Id from Category 
 
-select * From Post
+select * from UserType
