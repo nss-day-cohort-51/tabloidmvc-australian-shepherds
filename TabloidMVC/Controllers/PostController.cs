@@ -29,27 +29,51 @@ namespace TabloidMVC.Controllers
         
         public IActionResult Index()
         {
+            if (User.IsInRole("Admin"))
+            {
+                var vm = new PostDropDownViewModel()
+                {
+                    Posts = _postRepository.ADMINGetAllPublishedPosts(),
+                    UserIds = _userRepository.GetAll(),
+                    CategoriesIds = _categoryRepository.GetAll()
+                };
 
-            var vm = new PostDropDownViewModel()
+                vm.selectedCategory = 0;
+                vm.selectedUser = 0;
+                vm.UserIds.Add(new UserProfile()
+                {
+                    Id = 0,
+                    FirstName = "-select-"
+                });
+                vm.CategoriesIds.Add(new Category()
+                {
+                    Id = 0,
+                    Name = "-select-"
+                });
+                return View(vm);
+            } else
             {
-                Posts = _postRepository.GetAllPublishedPosts(),
-                UserIds = _userRepository.GetAll(),
-                CategoriesIds = _categoryRepository.GetAll()
-            };
-            
-            vm.selectedCategory = 0;
-            vm.selectedUser = 0;
-            vm.UserIds.Add(new UserProfile()
-            {
-                Id = 0,
-                FirstName = "-select-"
-            });
-            vm.CategoriesIds.Add(new Category()
-            {
-                Id = 0,
-                Name = "-select-"
-            });
-            return View(vm);
+                var vm = new PostDropDownViewModel()
+                {
+                    Posts = _postRepository.GetAllPublishedPosts(),
+                    UserIds = _userRepository.GetAll(),
+                    CategoriesIds = _categoryRepository.GetAll()
+                };
+
+                vm.selectedCategory = 0;
+                vm.selectedUser = 0;
+                vm.UserIds.Add(new UserProfile()
+                {
+                    Id = 0,
+                    FirstName = "-select-"
+                });
+                vm.CategoriesIds.Add(new Category()
+                {
+                    Id = 0,
+                    Name = "-select-"
+                });
+                return View(vm);
+            }
         }
 
         [HttpPost]
@@ -144,7 +168,7 @@ namespace TabloidMVC.Controllers
         public IActionResult Edit(int id)
         {
             Post post = _postRepository.GetPublishedPostById(id);
-
+            Console.WriteLine($"Post Id: {id}");
             return View(post);
         }
 
@@ -159,6 +183,7 @@ namespace TabloidMVC.Controllers
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex);
                 return View(post);
             }
 
