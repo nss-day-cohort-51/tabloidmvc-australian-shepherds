@@ -2,4 +2,4 @@
 VALUES ('Deactivated')
 
 
-select * from UserType
+select * from Post
