@@ -46,7 +46,6 @@
                 </td>
                 <td>
                     <a asp-controller="Comment" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
                     <a asp-controller="Comment" asp-action="DeleteComment" asp-route-id="@item.Id">Delete</a> |
                     <a asp-controller="Post" asp-action="Details" asp-route-id="@item.PostId">View Related Post</a>
                 </td>
